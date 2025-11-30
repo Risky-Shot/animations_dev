@@ -14,54 +14,21 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.repository.default_branch }}
-
-      - name: Debug pnpm-lock.yaml
-        run: |
-          if [ -f web/pnpm-lock.yaml ]; then
-            echo "pnpm-lock.yaml found."
-          else
-            echo "pnpm-lock.yaml is missing."
-            exit 1
-          fi
-                
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4.0.0
-        with:
-          version: 10
-          
+ 
       - name: Setup node
         uses: actions/setup-node@v2
         with:
           node-version: 22.x
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install Dependencies
+        run: npm ci
         working-directory: web
 
       - name: Run build
-        run: pnpm build
+        run: npm run build
         working-directory: web
         env:
           CI: false
-
-      # - name: Bump manifest version
-      #   run: node .github/actions/bump-manifest-version.js
-      #   env:
-      #     TGT_RELEASE_VERSION: ${{ github.ref_name }}
-
-      # - name: Push manifest change
-      #   uses: EndBug/add-and-commit@v8
-      #   with:
-      #     add: fxmanifest.lua
-      #     push: true
-      #     author_name: Manifest Bumper
-      #     author_email: 41898282+github-actions[bot]@users.noreply.github.com
-      #     message: "chore: bump manifest version to ${{ github.ref_name }}"
-
-      # - name: Update tag ref
-      #   uses: EndBug/latest-tag@latest
-      #   with:
-      #     tag-name: ${{ github.ref_name }}
 
       - name: Bundle files
         run: |
