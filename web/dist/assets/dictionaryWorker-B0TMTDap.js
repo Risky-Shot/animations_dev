@@ -1,0 +1,1 @@
+(function(){"use strict";self.onmessage=function(c){const{query:s,keys:t}=c.data;if(!s){console.log("Empt"),postMessage(t);return}const i=s.toLowerCase().split(" "),l=t.filter(n=>i.every(e=>{const o=e.startsWith("!"),r=o?e.slice(1):e;return o?!n.includes(r):n.includes(r)}));postMessage(l)}})();

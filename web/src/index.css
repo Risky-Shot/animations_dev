@@ -1,0 +1,19 @@
+:root, html, body, #root {
+  height: 100vh;
+  /* background: transparent !important; */
+  background-color: transparent !important;
+  overflow: hidden;
+}
+
+/* remove any default white from Chakra container if present */
+chakra-root, .chakra-ui {
+  background: transparent !important;
+}
+
+.chakra-slider__track {
+  background-color: gray;
+}
+
+.chakra-slider__range {
+  background-color: rgb(73, 0, 0);
+}
