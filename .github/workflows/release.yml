@@ -38,14 +38,12 @@ jobs:
           cp -r ./web/dist ./temp/animations_dev/web/dist
           cd ./temp && zip -r ../animations_dev.zip ./animations_dev
           
-      - name: Create Release
-        uses: "marvinpinto/action-automatic-releases@v1.2.1"
-        id: auto_release
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          title: "${{ env.RELEASE_VERSION }}"
-          prerelease: false
           files: animations_dev.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         env:
           CI: false
