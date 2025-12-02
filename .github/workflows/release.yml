@@ -1,0 +1,56 @@
+name: Release on Push
+
+on: [push]
+
+jobs:
+  create-release:
+    name: Build and Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install archive tools
+        run: sudo apt install zip -y
+
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Auto-generate a tag
+        id: tag
+        run: |
+          TAG="auto-$(date +'%Y%m%d-%H%M%S')"
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          git tag $TAG
+          git push origin $TAG
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm ci
+        working-directory: web
+
+      - name: Run build
+        run: npm run build
+        working-directory: web
+        env:
+          CI: false
+
+      - name: Bundle files
+        run: |
+          mkdir -p ./temp/animations_dev/web
+          cp ./{README.md,fxmanifest.lua} ./temp/animations_dev
+          cp -r ./web/dist ./temp/animations_dev/web/dist
+          cd ./temp && zip -r ../animations_dev.zip ./animations_dev
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}     # Use auto-generated tag
+          name: "${{ github.event.repository.name }} Release"
+          files: animations_dev.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
